@@ -440,7 +440,11 @@ class Haproxy(object):
                 # calculate virtual path rules
                 path_rules = []
                 path = vhost["path"].strip()
-                if "*" in path:
+                if path.endswith("*"):
+                    path_rules.append(
+                            "acl path_rule_%d path_beg %s" % (
+                                rule_counter, path.replace(".", "\.").replace("*", "")))
+                elif "*" in path:
                     path_rules.append(
                             "acl path_rule_%d path_reg -i ^%s$" % (
                                 rule_counter, path.replace(".", "\.").replace("*", ".*")))
